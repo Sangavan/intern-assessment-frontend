@@ -2,12 +2,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, ArrowRight, Loader2, AlertCircle, User, Rocket, ShieldCheck, Star, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Loader2, AlertCircle, User, Rocket, ShieldCheck, Star, Eye, EyeOff, CheckCircle } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -15,6 +16,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
       method: 'POST',
@@ -31,7 +33,8 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push('/login');
+    setSuccess('Account created successfully! Redirecting to login...');
+    setTimeout(() => router.push('/login'), 2000);
   };
 
   return (
@@ -68,6 +71,12 @@ export default function RegisterPage() {
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-6 text-sm flex items-center gap-2">
               <AlertCircle size={16} /> {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-lg mb-6 text-sm flex items-center gap-2">
+              <CheckCircle size={16} /> {success}
             </div>
           )}
 
@@ -124,10 +133,10 @@ export default function RegisterPage() {
             </div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !!success}
               className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-3 rounded-xl font-semibold hover:from-violet-700 hover:to-indigo-700 transition-all shadow-lg shadow-indigo-200 disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {loading ? <><Loader2 size={18} className="animate-spin" /> Creating account...</> : <>Create Account <ArrowRight size={18} /></>}
+              {loading ? <><Loader2 size={18} className="animate-spin" /> Creating account...</> : success ? <><CheckCircle size={18} /> Account Created!</> : <>Create Account <ArrowRight size={18} /></>}
             </button>
           </form>
 
