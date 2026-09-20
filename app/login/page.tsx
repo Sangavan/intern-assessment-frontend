@@ -32,6 +32,7 @@ export default function LoginPage() {
     }
 
     localStorage.setItem('userId', data.userId);
+    document.cookie = `session=true; path=/; max-age=${60 * 60 * 24}`;
     router.push('/dashboard');
   };
 

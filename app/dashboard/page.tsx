@@ -72,12 +72,14 @@ export default function DashboardPage() {
     const userId = localStorage.getItem('userId');
     await fetch(`${API}/users/${userId}`, { method: 'DELETE', credentials: 'include' });
     localStorage.removeItem('userId');
+    document.cookie = 'session=; path=/; max-age=0';
     router.push('/register');
   };
 
   const handleLogout = async () => {
     await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' });
     localStorage.removeItem('userId');
+    document.cookie = 'session=; path=/; max-age=0';
     router.push('/login');
   };
 
